@@ -1,4 +1,4 @@
-import psycopg2
+import psycopg2  # type: ignore[import-untyped]
 from typing import List, Tuple
 from .config import config
 

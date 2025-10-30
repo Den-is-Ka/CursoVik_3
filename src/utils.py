@@ -1,4 +1,4 @@
-import psycopg2
+import psycopg2  # type: ignore[import-untyped]
 from src.config import config
 from src.hh_api import HHParser
 

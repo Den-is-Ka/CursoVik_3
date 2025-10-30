@@ -25,48 +25,55 @@ def main() -> None:
         print("4. Список вакансий, зарплата которых выше средней по всем вакансиям")
         print("5. Получить список всех вакансий, в названии которых содержится слово из вашего запроса")
         print("6. Выход")
-        answer = input()
+        answer = input().strip()
         print("Подождите идет обработка запроса...")
 
         if answer == "1":
-            for elem in manager.get_companies_and_vacancies_count():
+            # List[Tuple[str, int]]
+            for company, vac_count in manager.get_companies_and_vacancies_count():
                 print(
-                    f"Название компании: {elem[0]}\n "
-                    f"Количество вакансий: {elem[1]}\n"
+                    f"Название компании: {company}\n"
+                    f"Количество вакансий: {vac_count}\n"
                 )
+
         elif answer == "2":
-            for elem in manager.get_all_vacancies():
+            # List[Tuple[str, str, int, int, str]]
+            for company, title, s_from, s_to, url in manager.get_all_vacancies():
                 print(
-                    f"Название компании: {elem[0]}\n"
-                    f"Название вакансии: {elem[1]}\n"
-                    f"Зарплата от {elem[2]} руб. до {elem[3]} руб.\n"
-                    f"Ссылка на вакансию: {elem[4]}\n"
+                    f"Название компании: {company}\n"
+                    f"Название вакансии: {title}\n"
+                    f"Зарплата от {s_from} руб. до {s_to} руб.\n"
+                    f"Ссылка на вакансию: {url}\n"
                 )
+
         elif answer == "3":
-            for elem in manager.get_avg_salary():
+            # List[Tuple[str, int]]
+            for title, avg_salary in manager.get_avg_salary():
                 print(
-                    f"Название вакансии: {elem[0]}\n"
-                    f"Средняя зарплата {elem[1]} руб.\n"
+                    f"Название вакансии: {title}\n"
+                    f"Средняя зарплата {avg_salary} руб.\n"
                 )
+
         elif answer == "4":
-            for elem in manager.get_vacancies_with_higher_salary():
+            # List[Tuple[str, int]]
+            for title, avg_salary in manager.get_vacancies_with_higher_salary():
                 print(
-                    f"Название вакансии: {elem[0]}\n"
-                    f"Средняя зарплата {elem[1]} руб.\n"
+                    f"Название вакансии: {title}\n"
+                    f"Средняя зарплата {avg_salary} руб.\n"
                 )
+
         elif answer == "5":
-            query_word = input("Введите название вакансии: ")
-
-            for elem in manager.get_vacancies_with_keyword(query_word):
-
+            query_word = input("Введите название вакансии: ").strip()
+            # List[Tuple[str, int, int, str]]
+            results = manager.get_vacancies_with_keyword(query_word)
+            for title, s_from, s_to, url in results:
                 print(
-                    f"Название вакансии: {elem[0]}\n"
-                    f"Зарплата от {elem[1]} руб. до {elem[2]} руб.\n"
-                    f"Ссылка на вакансию: {elem[3]}\n"
+                    f"Название вакансии: {title}\n"
+                    f"Зарплата от {s_from} руб. до {s_to} руб.\n"
+                    f"Ссылка на вакансию: {url}\n"
                 )
-            print(
-                f"Найдено вакансий - {len(manager.get_vacancies_with_keyword(query_word))}"
-            )
+            print(f"Найдено вакансий - {len(results)}")
+
         elif answer == "6":
             break
 
