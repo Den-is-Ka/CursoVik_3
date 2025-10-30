@@ -2,6 +2,9 @@ from configparser import ConfigParser
 
 
 def config(filename='database.ini', section='postgresql'):
+    """
+    Возвращаем словарь параметров из секции `section` INI-файла `filename`. Бросает Exception, если секции нет.
+    """
     parser = ConfigParser()
     parser.read(filename)
     db = {}
@@ -12,6 +15,3 @@ def config(filename='database.ini', section='postgresql'):
     else:
         raise Exception(f'Section {section} is not found in the {filename} file.')
     return db
-
-
-print(config())

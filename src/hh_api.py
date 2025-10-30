@@ -2,23 +2,38 @@ import requests
 
 
 class HHParser:
+    """
+    Клиент для получения работодателей и вакансий с hh.ru.
+    """
     def __init__(self):
+        """
+        Инициализируем базовые URL API hh.ru.
+        """
         self.__url_employer = 'https://api.hh.ru/employers'
         self.__url_vacancies = 'https://api.hh.ru/vacancies'
 
 
     def get_employers(self):
+        """
+        Возвращаем топ работодателей (список словарей с id и name).
+        """
         params = {'sort_by': 'by_vacancies_open', 'per_page': 10}
         response = requests.get(self.__url_employer, params=params).json()['items']
         return [{'id': employer['id'], 'name': employer['name']} for employer in response]
 
     def get_vacancies_by_employer(self, employer_id):
+        """
+        Возвращаем список вакансий по employer_id (сырые items из API).
+        """
         params = {'employer_id': employer_id, 'per_page': 100}
         response = requests.get(self.__url_vacancies, params=params).json()['items']
         return response
 
 
     def get_all_vacancies_by_employers(self):
+        """
+        Собираем и нормализуем вакансии для топ работодателей.
+        """
         employers = self.get_employers()
         all_vacancies = []
         for employer in employers:
@@ -29,10 +44,20 @@ class HHParser:
 
     @staticmethod
     def filter_vacancy(vacancy):
+        """
+        Возвращаем унифицированный словарь по вакансии (id, name, area, url, salary_from/to).
+        """
         if vacancy['salary']:
             salary_from = vacancy['salary']['from'] if vacancy['salary']['from'] else 0
             salary_to = vacancy['salary']['to'] if vacancy['salary']['to'] else 0
         else:
             salary_from = 0
             salary_to = 0
-        return {'id': vacancy['id'], 'name': vacancy['name'], 'area': vacancy['area']['name'], 'url': vacancy['alternate_url'], 'salary_from': salary_from, 'salary_to': salary_to}
+        return {
+            'id': vacancy['id'],
+            'name': vacancy['name'],
+            'area': vacancy['area']['name'],
+            'url': vacancy['alternate_url'],
+            'salary_from': salary_from,
+            'salary_to': salary_to
+        }
